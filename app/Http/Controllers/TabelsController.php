@@ -163,7 +163,7 @@ class TabelsController extends Controller
                     'jumlah' => $item['jumlah_angka'],
                     'satuan' => $item['satuan_jumlah'],
                     'keamanan' => ucfirst($item['klasifikasi_keamanan']),
-                    'Keterangan' => $item['keterangan'] ?? null
+                    'keterangan' => $item['keterangan'] ?? null
                 ]);
 
                 $createdItems[] = $berkasItem;
@@ -585,7 +585,7 @@ public function update(Request $request, $id)
             'jumlah' => $validated['jumlah'],
             'satuan' => $validated['satuan'],
             'keamanan' => ucfirst($validated['keamanan']),
-            'Keterangan' => $validated['keterangan'] ?? null
+            'keterangan' => $validated['keterangan'] ?? 'Tekstual'
         ]);
 
         DB::commit();

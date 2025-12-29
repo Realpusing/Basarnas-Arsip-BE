@@ -18,7 +18,7 @@ class berkas extends Model
         'tanggal',
         'jumlah',
         'keamanan',
-        'Keterangan',
+        'keterangan',
         'satuan'
     ];
     public function hal(){
