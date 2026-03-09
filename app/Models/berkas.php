@@ -19,7 +19,9 @@ class berkas extends Model
         'jumlah',
         'keamanan',
         'keterangan',
-        'satuan'
+        'satuan',
+        'created_at', // Tambahkan ini
+        'updated_at'  // Tambahkan ini
     ];
     public function hal(){
         return $this->belongsTo(hal::class, 'id_hal', 'id');

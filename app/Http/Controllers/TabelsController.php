@@ -37,8 +37,18 @@ class TabelsController extends Controller
      * Ambil semua data berkas dengan relasi
      * GET /api/berkas
      */
-    public function shDTables(){
-        $data = berkas::with('kode', 'hal')->get();
+    // Tambahkan Request $request di dalam kurung
+    public function shDTables(Request $request)
+    {
+        $query = berkas::with('kode', 'hal');
+
+        if ($request->has('tahun') && $request->tahun != '') {
+            $query->whereYear('tanggal', $request->tahun);
+        }
+
+        // 3. Ambil hasil akhirnya
+        $data = $query->orderBy('id', 'desc')->get();
+
         return response()->json([
             'status' => true,
             'message' => 'Data berkas berhasil diambil',
@@ -134,7 +144,7 @@ class TabelsController extends Controller
             'items.*.satuan_jumlah' => 'required|string',
             'items.*.jumlah_lengkap' => 'nullable|string',
             'items.*.klasifikasi_keamanan' => 'required|string|in:biasa,rahasia,super-rahasia',
-            'items.*.keterangan' => 'nullable|string'
+            'items.*.keterangan' => 'nullable|string',
         ]);
 
         try {
@@ -144,6 +154,7 @@ class TabelsController extends Controller
                 'nomor' => $validated['no_berkas'],
                 'judul_berkas' => $validated['judul_berkas']
             ]);
+
 
             $createdItems = [];
 
@@ -163,7 +174,9 @@ class TabelsController extends Controller
                     'jumlah' => $item['jumlah_angka'],
                     'satuan' => $item['satuan_jumlah'],
                     'keamanan' => ucfirst($item['klasifikasi_keamanan']),
-                    'keterangan' => $item['keterangan'] ?? null
+                    'keterangan' => $item['keterangan'] ?? null,
+                    'created_at' => $item['tanggal'],
+                    'updated_at' => $item['tanggal']
                 ]);
 
                 $createdItems[] = $berkasItem;
@@ -570,7 +583,9 @@ public function update(Request $request, $id)
             'jumlah' => 'required|numeric|min:0',
             'satuan' => 'required|string',
             'keamanan' => 'required|string|in:biasa,rahasia,super-rahasia,Biasa,Rahasia,Super-rahasia',
-            'keterangan' => 'nullable|string'
+            'keterangan' => 'nullable|string',
+            'tanggal'=>'nullable|string',
+
         ]);
 
         DB::beginTransaction();
@@ -585,7 +600,9 @@ public function update(Request $request, $id)
             'jumlah' => $validated['jumlah'],
             'satuan' => $validated['satuan'],
             'keamanan' => ucfirst($validated['keamanan']),
-            'keterangan' => $validated['keterangan'] ?? 'Tekstual'
+            'keterangan' => $validated['keterangan'] ?? 'Tekstual',
+            'created_at' => $validated['tanggal'], // Set created_at sama dengan tanggal
+            'updated_at' => $validated['tanggal']  // Set updated_at sama dengan tanggal
         ]);
 
         DB::commit();
@@ -619,4 +636,5 @@ public function update(Request $request, $id)
         ], 500);
     }
 }
+
 }

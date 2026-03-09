@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TabelsController;
+use App\Http\Controllers\KlasifikasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,13 @@ use App\Http\Controllers\TabelsController;
 // =====================================================
 Route::get('/hello', function () {
     return response()->json(['message' => 'Hello API']);
+});
+Route::prefix('klasifikasi')->group(function () {
+    Route::get('/', [KlasifikasiController::class, 'index']); // Ambil semua data
+    Route::get('/active', [KlasifikasiController::class, 'getActive']); // Ambil data aktif saja
+    Route::post('/', [KlasifikasiController::class, 'store']); // Tambah data
+    Route::put('/{id}', [KlasifikasiController::class, 'update']); // Edit data
+    Route::patch('/{id}/toggle-status', [KlasifikasiController::class, 'toggleStatus']); // Ubah status aktif/nonaktif
 });
 
 // =====================================================
@@ -61,12 +69,7 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/keamanan-per-klasifikasi', [TabelsController::class, 'getKeamananPerKlasifikasi']);
 });
 
-// =====================================================
-// KLASIFIKASI ROUTES
-// =====================================================
-Route::get('/klasifikasi', [TabelsController::class, 'index']);
 
-// =====================================================
 // BERKAS/ARSIP ROUTES
 // =====================================================
 Route::prefix('berkas')->group(function () {
